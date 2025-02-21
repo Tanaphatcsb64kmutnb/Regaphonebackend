@@ -307,259 +307,210 @@
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
 
-# -*- coding: utf-8 -*-
+# from flask import Flask, request, jsonify
+# import tensorflow as tf
+# import numpy as np
+# from flask_cors import CORS
+
+# app = Flask(__name__)
+# CORS(app)
+
+# # Load the trained model
+# MODEL_PATH = 'D:/regaphone - Copy (2)/Rega-Project/my_flask_app/uploads/yoga_pose_model2.h5'
+
+# model = tf.keras.models.load_model(MODEL_PATH)
+
+# # List of yoga pose names (based on your training data)
+# POSE_NAMES = [
+#     "assisted side bend", "Bird Dog Pose", "Bow pose", 
+#     "Butterfly Pose_Bound Angle Pose (Baddha Konasana)", "Cactus Pose",
+#     "Camel Pose", "Cat Cow Pose", "Chair Twist Pose", "Cow Face Pose",
+#     "Downward Facing Dog Pose (Adho Mukha Svanasana)", "Eagle Pose (Garudasana)",
+#     "Finger Up and Down Stretch", "Frog Pose", "Garland Pose",
+#     "Gate yoga pose", "Goddess Pose", "Half Forward Bend",
+#     "Half Moon Pose", "Half-Split Strength", "Head to Knee Forward Bend",
+#     "Hero Pose", "Legs Up the Wall Pose (Viparita Karani)",
+#     "Low Lunge Pose (Anjaneyasana)", "Lunging Calf Stretch",
+#     "Mountain Pose (Tadasana)", "Paschimottanasana (The Seated Forward Bend)",
+#     "Plow Pose", "Pyramid Pose", "Reverse warrior",
+#     "Revolved Janu Sirsasana", "Revolved Side Angle Pose",
+#     "Revolved Triangle Pose", "Sage Marichi Pose", "Salutation Seal",
+#     "Side Neck Stretch", "Standing Bent Over Calf Strength",
+#     "Standing Bow Pose", "Standing Figure Four Pose",
+#     "Standing Forward Bend Pose (Uttanasana)", "Standing Quad Stretch Pose",
+#     "Standing Spinal Twist Pose", "Sukhasana (Easy Pose)",
+#     "Table to toe pose", "Tadasana with Lateral Bend",
+#     "The Big Toe Pose", "Thread the Needle Pose",
+#     "Triangle Pose (Trikonasana)", "Upward Salute",
+#     "Virasana Hero Pose", "Vrikshasana (The Tree Pose)",
+#     "Warrior I Pose (Virabhadrasana I)", "Warrior II Pose (Virabhadrasana II)",
+#     "Wind Relieving Pose", "crescent lunge twist yoga pose",
+#     "extended side angle pose", "half lord of the fishes pose",
+#     "lizard pose"
+# ]
+
+# @app.route('/predict', methods=['POST'])
+# def predict_pose():
+#     try:
+#         # Get keypoints data from request
+#         data = request.json
+#         keypoints = data.get('keypoints', [])
+        
+#         if not keypoints:
+#             return jsonify({"error": "No keypoints provided"}), 400
+            
+#         # Convert to numpy array and reshape
+#         keypoints = np.array(keypoints).reshape(1, -1)
+        
+#         # Ensure we have the correct number of keypoints (33 landmarks * 3 coordinates)
+#         if keypoints.shape[1] != 99:
+#             return jsonify({"error": f"Expected 99 values, got {keypoints.shape[1]}"}), 400
+            
+#         # Make prediction
+#         prediction = model.predict(keypoints)
+#         predicted_class = np.argmax(prediction)
+#         confidence = float(np.max(prediction))
+        
+#         # Get top 3 predictions
+#         top_3_indices = np.argsort(prediction[0])[-3:][::-1]
+#         top_3_predictions = [
+#             {
+#                 "pose": POSE_NAMES[idx],
+#                 "confidence": float(prediction[0][idx])
+#             } for idx in top_3_indices
+#         ]
+        
+#         return jsonify({
+#             "predicted_pose": POSE_NAMES[predicted_class],
+#             "confidence": confidence,
+#             "top_3_predictions": top_3_predictions
+#         }), 200
+            
+#     except Exception as e:
+#         print(f"Error in prediction: {str(e)}")
+#         return jsonify({"error": str(e)}), 500
+
+# if __name__ == '__main__':
+#     print("Loading model and starting server...")
+#     app.run(host='0.0.0.0', port=5000, debug=True)
+
+
+
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+import tensorflow as tf
 import numpy as np
-from collections import deque
+from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={
-    r"/predict": {
-        "origins": "*",
-        "methods": ["POST"],
-        "allow_headers": ["Content-Type"]
-    }
-})
+CORS(app)
 
-# คอนฟิกพื้นฐาน
-CONFIDENCE_THRESHOLD = 0.3
-POSE_BUFFER_SIZE = 3
-prediction_buffer = deque(maxlen=POSE_BUFFER_SIZE)
+# โหลดโมเดล LSTMyoga_pose_model_fold21225_5
+MODEL_PATH = 'D:/regaphone - Copy (2)/Rega-Project/my_flask_app/uploads/yoga_pose_model_lstmt5.h5'
+# MODEL_PATH = 'D:/regaphone - Copy (2)/Rega-Project/my_flask_app/uploads/yoga_pose_model_fold21225_5.h5'
+model = tf.keras.models.load_model(MODEL_PATH)
 
-# ข้อมูลมุมมาตรฐานของแต่ละท่า
-POSE_ANGLES = {
-    "Tree Pose": {
-        'right_shoulder': {'min': 80, 'max': 100},  # ไหล่ตรง
-        'left_shoulder': {'min': 80, 'max': 100},   # ไหล่ตรง
-        'right_elbow': {'min': 165, 'max': 195},    # แขนยกขึ้น
-        'left_elbow': {'min': 165, 'max': 195},     # แขนยกขึ้น
-        'right_hip': {'min': 165, 'max': 195},      # สะโพกตรง
-        'left_hip': {'min': 165, 'max': 195},       # สะโพกตรง
-        'right_knee': {'min': 165, 'max': 195},     # ขาที่ยืน
-        'left_knee': {'min': 45, 'max': 90},        # ขาที่พับ
-    }
-}
-
-# ข้อความ feedback สำหรับแต่ละท่า
-POSE_FEEDBACK = {
-    "Tree Pose": {
-        'right_shoulder': {
-            'too_low': "ยกไหล่ขวาขึ้นให้ตรง",
-            'too_high': "ลดไหล่ขวาลงให้ตรง"
-        },
-        'left_shoulder': {
-            'too_low': "ยกไหล่ซ้ายขึ้นให้ตรง",
-            'too_high': "ลดไหล่ซ้ายลงให้ตรง"
-        },
-        'right_elbow': {
-            'too_low': "ยกแขนขวาขึ้นอีกนิด",
-            'too_high': "ลดแขนขวาลงเล็กน้อย"
-        },
-        'left_elbow': {
-            'too_low': "ยกแขนซ้ายขึ้นอีกนิด",
-            'too_high': "ลดแขนซ้ายลงเล็กน้อย"
-        },
-        'right_hip': {
-            'too_low': "ยืดลำตัวให้ตรง",
-            'too_high': "ผ่อนคลายลำตัวลงนิดหน่อย"
-        },
-        'left_hip': {
-            'too_low': "ยืดลำตัวให้ตรง",
-            'too_high': "ผ่อนคลายลำตัวลงนิดหน่อย"
-        },
-        'right_knee': {
-            'too_low': "ยืดขาขวาให้ตรง",
-            'too_high': "ย่อขาขวาลงเล็กน้อย"
-        },
-        'left_knee': {
-            'too_low': "งอเข่าซ้ายมากขึ้น",
-            'too_high': "ผ่อนเข่าซ้ายลงนิดหน่อย"
-        }
-    }
-}
-
-def normalize_keypoints(keypoints):
-    """ปรับค่า keypoints ให้เป็นมาตรฐาน"""
-    try:
-        points = np.array(keypoints).reshape(-1, 3)
-        center = np.mean(points, axis=0)
-        centered_points = points - center
-        
-        # คำนวณระยะทางระหว่างจุดกลางสะโพกและไหล่
-        hip_mid = (points[23] + points[24]) / 2
-        shoulder_mid = (points[11] + points[12]) / 2
-        spine_length = np.linalg.norm(shoulder_mid - hip_mid)
-        
-        normalized_points = centered_points / (spine_length + 1e-6)
-        return normalized_points.flatten()
-    except Exception as e:
-        print(f"Error in normalize_keypoints: {str(e)}")
-        return keypoints
-
-def calculate_angles(landmarks):
-    """คำนวณมุมของข้อต่อต่างๆ"""
-    points = np.array(landmarks).reshape(-1, 3)
-    
-    def calculate_angle(p1, p2, p3):
-        """คำนวณมุมระหว่าง 3 จุด"""
-        a = np.array([p1[0], p1[1]])
-        b = np.array([p2[0], p2[1]])
-        c = np.array([p3[0], p3[1]])
-        
-        ba = a - b
-        bc = c - b
-        
-        cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
-        angle = np.arccos(np.clip(cosine_angle, -1.0, 1.0))
-        
-        return np.degrees(angle)
-    
-    # คำนวณมุมสำหรับแต่ละข้อต่อ
-    angles = {
-        'right_shoulder': calculate_angle(
-            points[14],  # right elbow
-            points[12],  # right shoulder
-            points[24]   # right hip
-        ),
-        'left_shoulder': calculate_angle(
-            points[13],  # left elbow
-            points[11],  # left shoulder
-            points[23]   # left hip
-        ),
-        'right_elbow': calculate_angle(
-            points[12],  # right shoulder
-            points[14],  # right elbow
-            points[16]   # right wrist
-        ),
-        'left_elbow': calculate_angle(
-            points[11],  # left shoulder
-            points[13],  # left elbow
-            points[15]   # left wrist
-        ),
-        'right_hip': calculate_angle(
-            points[12],  # right shoulder
-            points[24],  # right hip
-            points[26]   # right knee
-        ),
-        'left_hip': calculate_angle(
-            points[11],  # left shoulder
-            points[23],  # left hip
-            points[25]   # left knee
-        ),
-        'right_knee': calculate_angle(
-            points[24],  # right hip
-            points[26],  # right knee
-            points[28]   # right ankle
-        ),
-        'left_knee': calculate_angle(
-            points[23],  # left hip
-            points[25],  # left knee
-            points[27]   # left ankle
-        )
-    }
-    
-    return angles
-
-def calculate_pose_score(pose_name, angles):
-    """คำนวณคะแนนท่าทาง"""
-    if pose_name not in POSE_ANGLES:
-        return 0, []
-        
-    target_angles = POSE_ANGLES[pose_name]
-    feedback = []
-    score = 0
-    total_points = len(target_angles)
-    
-    # เพิ่มความยืดหยุ่นในการตรวจจับ
-    tolerance = 15  # องศา
-    
-    for joint, angle in angles.items():
-        if joint in target_angles:
-            target = target_angles[joint]
-            min_angle = target['min'] - tolerance
-            max_angle = target['max'] + tolerance
-            
-            if min_angle <= angle <= max_angle:
-                score += 1
-            else:
-                if angle < min_angle:
-                    feedback.append(POSE_FEEDBACK[pose_name][joint]['too_low'])
-                else:
-                    feedback.append(POSE_FEEDBACK[pose_name][joint]['too_high'])
-    
-    return (score / total_points) * 100, feedback
+# รายชื่อท่าโยคะทั้งหมดตามลำดับ
+POSE_NAMES = [
+    "Triangle Pose (Trikonasana)",
+    "Warrior I Pose (Virabhadrasana I)",
+    "Warrior II Pose (Virabhadrasana II)",
+    "Standing Forward Bend Pose (Uttanasana)",
+    "Vrikshasana (The Tree Pose)",
+    "Downward Facing Dog Pose (Adho Mukha Svanasana)",
+    "Utkatasana (The Chair Pose)",
+    "Sukhasana (Easy Pose)",
+    "Butterfly Pose_Bound Angle Pose (Baddha Konasana)",
+    "Eagle Pose (Garudasana)",
+    "Legs Up the Wall Pose (Viparita Karani)",
+    "Low Lunge Pose (Anjaneyasana)",
+    "Mountain Pose (Tadasana)",
+    "Paschimottanasana (The Seated Forward Bend)",
+    "Chair Twist Pose",
+    "lizard pose",
+    "crescent lunge twist yoga pose",
+    "Revolved Janosha shansana",
+    "wind relieving pose",
+    "Bird Dog Pose",
+    "Side Neck Stretch",
+    "Half moon pose",
+    "Gate yoga pose",
+    "Upward Salute",
+    "Table to toe pose",
+    "Thread the needle pose",
+    "Standing Quad Stretch Pose",
+    "Tadasana with Lateral Bend",
+    "Revolved Side Angle Pose",
+    "Pyramid Pose",
+    "Goddess Pose",
+    "Reverse Warrior",
+    "Standing Bow Pose",
+    "Standing Figure Four Pose",
+    "Revolved Triangle Pose",
+    "Standing Spinal Twist Pose",
+    "Lunging Calf Stretch",
+    "Standing Bent Over Calf Strength",
+    "Half-Split Strength",
+    "frog pose",
+    "Camel pose",
+    "Cat cow pose",
+    "Cow Face pose",
+    "extended side angle pose",
+    "Garland pose",
+    "half lord of the fishes pose",
+    "Hero pose",
+    "Assisted side bend",
+    "Finger Up and Down Strecth",
+    "Salutation Seal",
+    "Head to knee Forward Bend",
+    "The big toe pose",
+    "Sage Marichi",
+    "Hald forward Bend",
+    "Plow pose",
+    "Bow pose",
+    "Cactus pose"
+]
 
 @app.route('/predict', methods=['POST'])
-def predict_pose():
+def predict():
     try:
+        # รับ keypoints จาก request
         data = request.json
         keypoints = data.get('keypoints', [])
         
         if not keypoints:
-            response = jsonify({
-                "error": "ไม่พบข้อมูล keypoints",
-                "message": "กรุณาลองใหม่อีกครั้ง"
-            })
-            response.headers['Content-Type'] = 'application/json; charset=utf-8'
-            return response, 400
+            return jsonify({"error": "No keypoints provided"}), 400
+            
+        # แปลงเป็น numpy array และ reshape ให้เหมาะกับ LSTM
+        keypoints = np.array(keypoints).reshape(1, 33, 3)
         
-        # ปรับค่า keypoints
-        normalized_keypoints = normalize_keypoints(keypoints)
+        # Predict
+        prediction = model.predict(keypoints)
+        predicted_class = np.argmax(prediction[0])
+        confidence = float(np.max(prediction[0]))
         
-        # คำนวณมุมของข้อต่อต่างๆ
-        angles = calculate_angles(normalized_keypoints)
+        # หา top 3 predictions
+        top_3_indices = np.argsort(prediction[0])[-3:][::-1]
+        top_3_predictions = [
+            {
+                "pose": POSE_NAMES[idx],
+                "confidence": float(prediction[0][idx])
+            } for idx in top_3_indices
+        ]
         
-        # หาท่าที่ตรงที่สุด
-        best_pose = None
-        max_score = 0
-        best_feedback = []
-        
-        for pose_name in POSE_ANGLES.keys():
-            score, feedback = calculate_pose_score(pose_name, angles)
-            if score > max_score:
-                max_score = score
-                best_pose = pose_name
-                best_feedback = feedback
-        
-        # สร้าง response
-        if max_score >= CONFIDENCE_THRESHOLD * 100:
-            result = {
-                'predicted_pose': best_pose,
-                'confidence': max_score / 100,
-                'score': max_score,
-                'feedback': best_feedback,
-                'angles': angles
-            }
-        else:
-            result = {
-                'predicted_pose': 'ไม่สามารถระบุท่าได้',
-                'confidence': 0,
-                'score': 0,
-                'feedback': ['กรุณาทำท่าให้ชัดเจนขึ้น'],
-                'angles': angles
-            }
-        
-        # เพิ่ม logging เพื่อดูค่ามุมต่างๆ
-        print(f"Angles: {angles}")
-        print(f"Score: {max_score}")
-        print(f"Feedback: {best_feedback}")
-        
-        response = jsonify(result)
-        response.headers['Content-Type'] = 'application/json; charset=utf-8'
-        return response
+        return jsonify({
+            "predicted_pose": POSE_NAMES[predicted_class],
+            "confidence": confidence,
+            "top_3_predictions": top_3_predictions
+        }), 200
             
     except Exception as e:
         print(f"Error in prediction: {str(e)}")
-        response = jsonify({
-            "error": f"เกิดข้อผิดพลาด: {str(e)}",
-            "message": "กรุณาลองใหม่อีกครั้ง"
-        })
-        response.headers['Content-Type'] = 'application/json; charset=utf-8'
-        return response, 500
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
+    print(f"Model loaded successfully. Ready to predict {len(POSE_NAMES)} yoga poses.")
     app.run(host='0.0.0.0', port=5000, debug=True)
+
 # from flask import Flask, request, render_template, jsonify
 # import tensorflow as tf
 # import numpy as np

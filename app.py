@@ -82,85 +82,85 @@ POSE_NAMES = [
     "Warrior 3 Pose"                  # จากเดิม: Warrior3
 ]
 
-import pandas as pd
-import numpy as np
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import tensorflow as tf
-import logging
+# import pandas as pd
+# import numpy as np
+# from flask import Flask, request, jsonify
+# from flask_cors import CORS
+# import tensorflow as tf
+# import logging
 
-app = Flask(__name__)
-CORS(app)
+# app = Flask(__name__)
+# CORS(app)
 
-# ตั้งค่า logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# # ตั้งค่า logging
+# logging.basicConfig(level=logging.INFO)
+# logger = logging.getLogger(__name__)
 
-# โหลดโมเดล
-MODEL_PATH = 'uploads/yoga_pose_model_best_folddd28268.h5'
-model = tf.keras.models.load_model(MODEL_PATH)
+# # โหลดโมเดล
+# MODEL_PATH = 'uploads/yoga_pose_model_best_folddd28268.h5'
+# model = tf.keras.models.load_model(MODEL_PATH)
 
-# โหลดข้อมูลค่าเฉลี่ยมุมของแต่ละท่าจาก CSV
-ANGLE_DATA_PATH = 'uploads/yoga_pose_average_angles_nameddddd.csv'
-angle_df = pd.read_csv(ANGLE_DATA_PATH)
-logger.info(f"โหลดข้อมูลมุมทั้งหมด {len(angle_df)} ท่า")
+# # โหลดข้อมูลค่าเฉลี่ยมุมของแต่ละท่าจาก CSV
+# ANGLE_DATA_PATH = 'uploads/yoga_pose_average_angles_nameddddd.csv'
+# angle_df = pd.read_csv(ANGLE_DATA_PATH)
+# logger.info(f"โหลดข้อมูลมุมทั้งหมด {len(angle_df)} ท่า")
 
-# ชื่อท่าโยคะทั้งหมด (ใช้ชื่อที่ปรับให้สั้นและอ่านง่ายแล้ว)
-POSE_NAMES = [
-    "Triangle Pose",                  
-    "The Chair Pose",                 
-    "Easy Pose",                      
-    "Butterfly Pose",                 
-    "Mountain Pose",                  
-    "Chair Twist Pose",               
-    "Lizard Pose",                    
-    "Crescent Lunge Twist Pose",      
-    "Revolved Head To Knee Pose",     
-    "Bird Dog Pose",                  
-    "Side Neck Stretch Pose",         
-    "Gate Pose",                      
-    "Upward Salute Pose",             
-    "Standing Quad Stretch Pose",     
-    "Upward Salute Side Bend Pose",   
-    "Revolved Side Angle Pose",       
-    "Pyramid Pose",                   
-    "Goddess Pose",                   
-    "Reverse Warrior Pose",           
-    "Standing Bow Pose",              
-    "Standing Figure Four Pose",      
-    "Revolved Triangle Pose",         
-    "Standing Spinal Twist Pose",     
-    "Lunging Calf Stretch Pose",      
-    "Standing Bent Over Calf Strength Pose",  
-    "Half Split Pose",                
-    "Extended Side Angle Pose",       
-    "Hero Pose",                      
-    "Assisted Side Bend Pose",        
-    "Salutation Seal Pose",           
-    "Head To Knee Forward Bend Pose", 
-    "Big Toe Pose",                   
-    "Half Forward Bend Pose",         
-    "Plow Pose",                      
-    "Bow Pose",                       
-    "Cactus Pose",                    
-    "Warrior 2 Pose",                 
-    "Warrior 1 Pose",                 
-    "Tree Pose",                      
-    "Boat Pose",                      
-    "Bridge Pose",                    
-    "Camel Pose",                     
-    "Cat Cow Pose",                   
-    "Cobra Pose",                     
-    "Corpse Pose",                    
-    "Half Lord Of The Fishes Pose",   
-    "Half Moon Pose",                 
-    "Dancer Pose",                    
-    "Low Lunge Pose",                 
-    "King Pigeon Pose",               
-    "Side Plank Pose",                
-    "Side Reclining Leg Lift Pose",   
-    "Warrior 3 Pose"                  
-]
+# # ชื่อท่าโยคะทั้งหมด (ใช้ชื่อที่ปรับให้สั้นและอ่านง่ายแล้ว)
+# POSE_NAMES = [
+#     "Triangle Pose",                  
+#     "The Chair Pose",                 
+#     "Easy Pose",                      
+#     "Butterfly Pose",                 
+#     "Mountain Pose",                  
+#     "Chair Twist Pose",               
+#     "Lizard Pose",                    
+#     "Crescent Lunge Twist Pose",      
+#     "Revolved Head To Knee Pose",     
+#     "Bird Dog Pose",                  
+#     "Side Neck Stretch Pose",         
+#     "Gate Pose",                      
+#     "Upward Salute Pose",             
+#     "Standing Quad Stretch Pose",     
+#     "Upward Salute Side Bend Pose",   
+#     "Revolved Side Angle Pose",       
+#     "Pyramid Pose",                   
+#     "Goddess Pose",                   
+#     "Reverse Warrior Pose",           
+#     "Standing Bow Pose",              
+#     "Standing Figure Four Pose",      
+#     "Revolved Triangle Pose",         
+#     "Standing Spinal Twist Pose",     
+#     "Lunging Calf Stretch Pose",      
+#     "Standing Bent Over Calf Strength Pose",  
+#     "Half Split Pose",                
+#     "Extended Side Angle Pose",       
+#     "Hero Pose",                      
+#     "Assisted Side Bend Pose",        
+#     "Salutation Seal Pose",           
+#     "Head To Knee Forward Bend Pose", 
+#     "Big Toe Pose",                   
+#     "Half Forward Bend Pose",         
+#     "Plow Pose",                      
+#     "Bow Pose",                       
+#     "Cactus Pose",                    
+#     "Warrior 2 Pose",                 
+#     "Warrior 1 Pose",                 
+#     "Tree Pose",                      
+#     "Boat Pose",                      
+#     "Bridge Pose",                    
+#     "Camel Pose",                     
+#     "Cat Cow Pose",                   
+#     "Cobra Pose",                     
+#     "Corpse Pose",                    
+#     "Half Lord Of The Fishes Pose",   
+#     "Half Moon Pose",                 
+#     "Dancer Pose",                    
+#     "Low Lunge Pose",                 
+#     "King Pigeon Pose",               
+#     "Side Plank Pose",                
+#     "Side Reclining Leg Lift Pose",   
+#     "Warrior 3 Pose"                  
+# ]
 
 # เตรียมข้อมูลมุมของแต่ละท่าไว้ใช้อ้างอิง
 pose_angle_references = {}

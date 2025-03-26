@@ -16,12 +16,14 @@ logger = logging.getLogger(__name__)
 
 # โหลดโมเดล
 # MODEL_PATH = 'uploads/yoga_pose_model_best_folddd28268.h5'
-MODEL_PATH = os.environ.get('MODEL_PATH', 'uploads/yoga_pose_model_best_folddd28268.h5')
+# MODEL_PATH = os.environ.get('MODEL_PATH', 'uploads/yoga_pose_model_best_folddd28268.h5')
+MODEL_PATH = "uploads/yoga_pose_model_best_folddd28268.h5"
 model = tf.keras.models.load_model(MODEL_PATH)
 
 # โหลดข้อมูลค่าเฉลี่ยมุมของแต่ละท่าจาก CSV
 # ANGLE_DATA_PATH = 'uploads/yoga_pose_average_angles_nameddddd.csv'
-ANGLE_DATA_PATH = os.environ.get('ANGLE_DATA_PATH', 'uploads/yoga_pose_average_angles_nameddddd.csv')
+# ANGLE_DATA_PATH = os.environ.get('ANGLE_DATA_PATH', 'uploads/yoga_pose_average_angles_nameddddd.csv')
+ANGLE_DATA_PATH = "uploads/yoga_pose_average_angles_nameddddd.csv"
 angle_df = pd.read_csv(ANGLE_DATA_PATH)
 logger.info(f"โหลดข้อมูลมุมทั้งหมด {len(angle_df)} ท่า")
 

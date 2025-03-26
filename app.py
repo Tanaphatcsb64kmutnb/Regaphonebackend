@@ -25,6 +25,20 @@ ANGLE_DATA_PATH = os.environ.get('ANGLE_DATA_PATH', 'uploads/yoga_pose_average_a
 angle_df = pd.read_csv(ANGLE_DATA_PATH)
 logger.info(f"โหลดข้อมูลมุมทั้งหมด {len(angle_df)} ท่า")
 
+# บังคับให้ TensorFlow ใช้งานเฉพาะ CPU
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+# หรือตั้งค่าการใช้งาน GPU แบบมีเงื่อนไข
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        print(e)
+else:
+    print("No GPU available, using CPU instead")
+
 
 POSE_NAMES = [
     "Triangle Pose",                  # จากเดิม: Triangle Pose (Trikonasana)

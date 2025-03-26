@@ -6,7 +6,7 @@
 # gunicorn
 # protobuf==3.20.0
 
-tensorflow-cpu==2.18.0 
+tensorflow==2.18.0 
 numpy==1.24.3  # เวอร์ชันที่เข้ากันได้กับ TensorFlow 2.18.0
 pandas
 flask==2.0.1

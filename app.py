@@ -13,6 +13,7 @@ CORS(app)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # โหลดโมเดล
 # MODEL_PATH = 'uploads/yoga_pose_model_best_folddd28268.h5'
 MODEL_PATH = os.environ.get('MODEL_PATH', 'uploads/yoga_pose_model_best_folddd28268.h5')

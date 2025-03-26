@@ -6,12 +6,11 @@
 # gunicorn
 # protobuf==3.20.0
 
-
-tensorflow-cpu==2.8.0  # ใช้เวอร์ชัน CPU เพื่อหลีกเลี่ยงปัญหา GPU
-numpy==1.22.4  # เข้ากันได้ดีกับ TensorFlow 2.8.0
-pandas==1.4.2  # เวอร์ชันที่เข้ากันได้ดีกับ numpy 1.22.4
+tensorflow-cpu==2.8.0
+numpy==1.22.4
+pandas==1.4.2
 flask==2.0.1
+werkzeug==2.0.2
 flask-cors==3.0.10
 gunicorn==20.1.0
-protobuf==3.20.0  # แก้ปัญหา protobuf ที่พบก่อนหน้านี้
-scikit-learn==1.0.2  # เผื่อต้องใช้สำหรับการวิเคราะห์ข้อมูล
+protobuf==3.20.0

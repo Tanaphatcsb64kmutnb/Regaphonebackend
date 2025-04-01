@@ -24,7 +24,7 @@ model = tf.keras.models.load_model(MODEL_PATH)
 # ANGLE_DATA_PATH = 'uploads/yoga_pose_average_angles_nameddddd.csv'
 # ANGLE_DATA_PATH = os.environ.get('ANGLE_DATA_PATH', 'uploads/yoga_pose_average_angles_nameddddd.csv')
 # ANGLE_DATA_PATH = "uploads/yoga_pose_average_angles_nameddddd.csv"
-ANGLE_DATA_PATH = "uploads/newkeypointfix.xlsx"
+ANGLE_DATA_PATH = "uploads/newkeypointfix.csv"
 angle_df = pd.read_csv(ANGLE_DATA_PATH)
 logger.info(f"โหลดข้อมูลมุมทั้งหมด {len(angle_df)} ท่า")
 

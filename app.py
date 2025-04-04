@@ -657,7 +657,7 @@ def predict():
                     angle_similarity_all = calculate_angle_similarity(joint_angles, reference_angles)
                 
                 # ถ้าความคล้ายคลึงของมุมสูงพอด้วย ให้แน่ใจว่าเป็นท่าอื่นจริงๆ
-                if angle_similarity_all > 70.0:  # ปรับค่าตามความเหมาะสม
+                if angle_similarity_all > 40.0:  # ปรับค่าตามความเหมาะสม
                     logger.info(f"Detected pose {predicted_pose_all} that is not in allowed poses with high confidence: {confidence_all} and angle similarity: {angle_similarity_all}")
                     
                     return jsonify({

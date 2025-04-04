@@ -398,6 +398,8 @@
 # if __name__ == '__main__':
 #     port = int(os.environ.get('PORT', 5000))
 #     app.run(host='0.0.0.0', port=port, debug=False)
+
+
 import pandas as pd
 import numpy as np
 from flask import Flask, request, jsonify
@@ -657,14 +659,14 @@ def predict():
                     angle_similarity_all = calculate_angle_similarity(joint_angles, reference_angles)
                 
                 # ถ้าความคล้ายคลึงของมุมสูงพอด้วย ให้แน่ใจว่าเป็นท่าอื่นจริงๆ
-                if angle_similarity_all > 40.0:  # ปรับค่าตามความเหมาะสม
+                if angle_similarity_all > 50.0:  # ปรับค่าตามความเหมาะสม
                     logger.info(f"Detected pose {predicted_pose_all} that is not in allowed poses with high confidence: {confidence_all} and angle similarity: {angle_similarity_all}")
                     
                     return jsonify({
-                        "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
+                        "predicted_pose": "Unknown Pose",
                         "actual_detected_pose": predicted_pose_all,
                         "confidence": confidence_all,
-                        "angle_similarity": 0.0,
+                        "angle_similarity": angle_similarity_all,
                         "class_idx": int(predicted_class_all),
                         "expected_pose": expected_pose,
                         "suggestion": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด"
@@ -709,7 +711,7 @@ def predict():
                 # เพิ่มการตรวจสอบว่าความเชื่อมั่นหรือความคล้ายคลึงของมุมต่ำเกินไปหรือไม่
                 if confidence < MIN_CONFIDENCE_THRESHOLD and angle_similarity < MIN_ANGLE_SIMILARITY_THRESHOLD:
                     return jsonify({
-                        "predicted_pose": "Unknown Pose",
+                        "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
                         "confidence": confidence,
                         "angle_similarity": angle_similarity,
                         "class_idx": int(class_idx),

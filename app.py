@@ -663,14 +663,14 @@ def predict():
                     logger.info(f"Detected pose {predicted_pose_all} that is not in allowed poses with high confidence: {confidence_all} and angle similarity: {angle_similarity_all}")
                     
                     return jsonify({
-                        "predicted_pose": "Unknown Pose",
-                        "actual_detected_pose": predicted_pose_all,
-                        "confidence": confidence_all,
-                        "angle_similarity": angle_similarity_all,
-                        "class_idx": int(predicted_class_all),
-                        "expected_pose": expected_pose,
-                        "suggestion": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด"
-                    }), 200
+    "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",  # เปลี่ยนจาก "Unknown Pose"
+    "actual_detected_pose": predicted_pose_all,
+    "confidence": 0.0,  # เปลี่ยนจาก confidence_all เป็น 0.0
+    "angle_similarity": 0.0,  # เปลี่ยนจาก angle_similarity_all เป็น 0.0
+    "class_idx": int(predicted_class_all),
+    "expected_pose": expected_pose,
+    "suggestion": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด"
+}), 200
             
             # กรองผลลัพธ์เฉพาะท่าที่อยู่ในรายการที่อนุญาต
             filtered_scores = []
@@ -710,15 +710,15 @@ def predict():
                 
                 # เพิ่มการตรวจสอบว่าความเชื่อมั่นหรือความคล้ายคลึงของมุมต่ำเกินไปหรือไม่
                 if confidence < MIN_CONFIDENCE_THRESHOLD and angle_similarity < MIN_ANGLE_SIMILARITY_THRESHOLD:
-                    return jsonify({
-                        "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
-                        "confidence": confidence,
-                        "angle_similarity": angle_similarity,
-                        "class_idx": int(class_idx),
-                        "expected_pose": expected_pose,
-                        "suggestion": "ไม่สามารถระบุท่าที่ชัดเจนได้ (ความเชื่อมั่นต่ำ)",
-                        "angle_discrepancies": {}
-                    }), 200
+                 return jsonify({
+        "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
+        "confidence": 0.0,  # เปลี่ยนจาก confidence เป็น 0.0
+        "angle_similarity": 0.0,  # เปลี่ยนจาก angle_similarity เป็น 0.0
+        "class_idx": int(class_idx),
+        "expected_pose": expected_pose,
+        "suggestion": "ไม่สามารถระบุท่าที่ชัดเจนได้ (ความเชื่อมั่นต่ำ)",
+        "angle_discrepancies": {}
+    }), 200
                 
                 # คำนวณความแตกต่างของมุมสำหรับฟีเจอร์ใหม่
                 if expected_pose and joint_angles and expected_pose in pose_angle_references:
@@ -749,14 +749,14 @@ def predict():
                 }), 200
             else:
                 # ถ้าไม่มีท่าตรงกัน ใช้ค่าเริ่มต้น
-                return jsonify({
-                    "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
-                    "confidence": 0.0,
-                    "angle_similarity": 0.0,
-                    "class_idx": -1,
-                    "expected_pose": expected_pose,
-                    "angle_discrepancies": {}
-                }), 200
+                 return jsonify({
+        "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
+        "confidence": 0.0,  # คงเดิม
+        "angle_similarity": 0.0,  # คงเดิม
+        "class_idx": -1,
+        "expected_pose": expected_pose,
+        "angle_discrepancies": {}
+    }), 200
     except Exception as e:
         logger.error(f"Error in prediction: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500

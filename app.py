@@ -398,8 +398,6 @@
 # if __name__ == '__main__':
 #     port = int(os.environ.get('PORT', 5000))
 #     app.run(host='0.0.0.0', port=port, debug=False)
-
-
 import pandas as pd
 import numpy as np
 from flask import Flask, request, jsonify
@@ -663,10 +661,10 @@ def predict():
                     logger.info(f"Detected pose {predicted_pose_all} that is not in allowed poses with high confidence: {confidence_all} and angle similarity: {angle_similarity_all}")
                     
                     return jsonify({
-                        "predicted_pose": "Unknown Pose",
+                        "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
                         "actual_detected_pose": predicted_pose_all,
                         "confidence": confidence_all,
-                        "angle_similarity": angle_similarity_all,
+                        "angle_similarity": 0.0,
                         "class_idx": int(predicted_class_all),
                         "expected_pose": expected_pose,
                         "suggestion": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด"
@@ -750,7 +748,7 @@ def predict():
             else:
                 # ถ้าไม่มีท่าตรงกัน ใช้ค่าเริ่มต้น
                 return jsonify({
-                    "predicted_pose": "Unknown Pose",
+                    "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
                     "confidence": 0.0,
                     "angle_similarity": 0.0,
                     "class_idx": -1,

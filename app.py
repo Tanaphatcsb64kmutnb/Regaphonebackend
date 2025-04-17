@@ -650,44 +650,28 @@ def predict():
                     pose_in_allowed = True
                     break
                     
-          # ส่วนที่ตรวจพบว่าท่าที่ทำนายได้ไม่อยู่ใน allowedPoses และมีความเชื่อมั่นสูงพอ
-if not pose_in_allowed and confidence_all > 0.65:
-    # คำนวณความคล้ายคลึงของมุมกับท่าที่ทำนายได้
-    angle_similarity_all = 0.0
-    if joint_angles and predicted_pose_all in pose_angle_references:
-        reference_angles = pose_angle_references[predicted_pose_all]
-        angle_similarity_all = calculate_angle_similarity(joint_angles, reference_angles)
+            # ถ้าท่าที่ทำนายไม่อยู่ใน allowedPoses และมีความเชื่อมั่นสูงพอ
+            if not pose_in_allowed and confidence_all > 0.65:  # ปรับค่าตามความเหมาะสม
+                # คำนวณความคล้ายคลึงของมุมกับท่าที่ทำนายได้
+                angle_similarity_all = 0.0
+                if joint_angles and predicted_pose_all in pose_angle_references:
+                    reference_angles = pose_angle_references[predicted_pose_all]
+                    angle_similarity_all = calculate_angle_similarity(joint_angles, reference_angles)
+                
+                # ถ้าความคล้ายคลึงของมุมสูงพอด้วย ให้แน่ใจว่าเป็นท่าอื่นจริงๆ
+                if angle_similarity_all > 50.0:  # ปรับค่าตามความเหมาะสม
+                    logger.info(f"Detected pose {predicted_pose_all} that is not in allowed poses with high confidence: {confidence_all} and angle similarity: {angle_similarity_all}")
+                    
+                    return jsonify({
+    "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",  # เปลี่ยนจาก "Unknown Pose"
+    "actual_detected_pose": predicted_pose_all,
+    "confidence": 0.0,  # เปลี่ยนจาก confidence_all เป็น 0.0
+    "angle_similarity": 0.0,  # เปลี่ยนจาก angle_similarity_all เป็น 0.0
+    "class_idx": int(predicted_class_all),
+    "expected_pose": expected_pose,
+    "suggestion": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด"
     
-    # ถ้าความคล้ายคลึงของมุมสูงพอด้วย ให้แน่ใจว่าเป็นท่าอื่นจริงๆ
-    if angle_similarity_all > 50.0:
-        logger.info(f"Detected pose {predicted_pose_all} that is not in allowed poses with high confidence: {confidence_all} and angle similarity: {angle_similarity_all}")
-        
-        # คำนวณความแตกต่างของมุมเทียบกับท่าที่ควรทำ (expected_pose)
-        if expected_pose and joint_angles and expected_pose in pose_angle_references:
-            reference_angles = pose_angle_references[expected_pose]
-            
-            # คำนวณความแตกต่างของมุมเหมือนกับกรณีที่ 1
-            for angle_name, user_angle in joint_angles.items():
-                if angle_name in reference_angles:
-                    ref_angle = reference_angles[angle_name]
-                    # ใช้เกณฑ์เดียวกับกรณีที่ 1 (40 องศา)
-                    if abs(user_angle - ref_angle) > 40:
-                        angle_discrepancies[angle_name] = {
-                            'user_angle': user_angle,
-                            'reference_angle': ref_angle,
-                            'difference': abs(user_angle - ref_angle)
-                        }
-        
-        return jsonify({
-            "predicted_pose": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
-            "actual_detected_pose": predicted_pose_all,
-            "confidence": 0.0,
-            "angle_similarity": 0.0,
-            "class_idx": int(predicted_class_all),
-            "expected_pose": expected_pose,
-            "suggestion": "คุณกำลังทำท่าที่ไม่ได้อยู่ในรายการที่กำหนด",
-            "angle_discrepancies": angle_discrepancies  # ส่งข้อมูลความแตกต่างของมุมกลับไป
-        }), 200
+}), 200
             
             # กรองผลลัพธ์เฉพาะท่าที่อยู่ในรายการที่อนุญาต
             filtered_scores = []

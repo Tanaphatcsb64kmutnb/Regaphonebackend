@@ -18,7 +18,7 @@ If the pose is performed correctly, the system awards points to the user, which 
 - The pose evaluation model is located at:  
   `uploads/yoga_pose_model_best_folddd28268.h5`  
 
-<img src="my_flask_app/assets/flask.png" alt="Flask Logo" width="100" />
+<img src="assets/flask.png" alt="Flask Logo" width="100" />
 
 ---
 
@@ -44,7 +44,7 @@ If the pose is performed correctly, the system awards points to the user, which 
 ### 5. Deployment  
 - The backend is deployed via [**Railway**](https://railway.app), enabling seamless deployment and hosting.
 
-<img src="my_flask_app/assets/railway.png" alt="Railway Logo" width="130" />
+<img src="assets/railway.png" alt="Railway Logo" width="130" />
 
 ---
 

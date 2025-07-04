@@ -13,7 +13,7 @@ This project uses a trained deep learning model to analyze user poses via keypoi
 1. **Backend Technology**  
    - Developed using **Python Flask** framework.
    - The core model is located at:  
-     `my_flask_app/uploads/yoga_pose_model_best_folddd28268.h5`.
+     `uploads/yoga_pose_model_best_folddd28268.h5`.
 
 2. **Yoga Pose Prediction**  
    - The model receives input in the form of keypoints and joint positions.
@@ -26,12 +26,9 @@ This project uses a trained deep learning model to analyze user poses via keypoi
 
 4. **System Architecture**  
    - You can find the overall backend system design here:  
-     `assets/systemarchitecturebackend.png`
+      <img src="`assets/systemarchitecturebackend.png`" width="250"/>
 
 5. **Deployment**  
    - The backend is deployed using [**Railway**](https://railway.app).
 
----
-
-## 📁 Project Structure (Simplified)
 

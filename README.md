@@ -1,34 +1,52 @@
-# Yoga Pose Evaluation System
+# 🧘‍♀️ Yoga Pose Evaluation System
 
 A Flask-based backend system for real-time yoga pose evaluation and scoring.
 
+---
+
 ## 🚀 Project Overview
 
-This project uses a trained deep learning model to analyze user poses via keypoints and joint positions, verifying their accuracy based on yoga posture standards. Users are rewarded with points when they perform a pose correctly.
+This project utilizes a trained deep learning model to analyze user yoga poses based on body keypoints and joint positions.  
+If the pose is performed correctly, the system awards points to the user, which are accumulated over time.
 
 ---
 
 ## 🧠 How It Works
 
-1. **Backend Technology**  
-   - Developed using **Python Flask** framework.
-   - The core model is located at:  
-     `uploads/yoga_pose_model_best_folddd28268.h5`.
+### 1. Backend Technology  
+- Developed using the **Python Flask** framework.  
+- The pose evaluation model is located at:  
+  `uploads/yoga_pose_model_best_folddd28268.h5`  
 
-2. **Yoga Pose Prediction**  
-   - The model receives input in the form of keypoints and joint positions.
-   - It predicts whether the user is performing the yoga pose correctly or not.
+<img src="my_flask_app/assets/flask.png" alt="Flask Logo" width="100" />
 
-3. **Score Calculation**  
-   - If the pose is predicted to be **correct**, the system calculates a **yoga score**.
-   
-   - Points are accumulated and stored for the user profile.
+---
 
-4. **System Architecture**  
-   - You can find the overall backend system design here:  
-      <img src="assets/systemarchitecturebackend.png" width="500"/>
+### 2. Yoga Pose Prediction  
+- The system receives keypoints and joint position data as input.  
+- The model predicts whether the user is performing the yoga pose correctly.
 
-5. **Deployment**  
-   - The backend is deployed using [**Railway**](https://railway.app).
+---
 
+### 3. Score Calculation  
+- When a pose is correctly performed, the system:
+  - Calculates a **yoga score**
+  - Adds it to the user's total accumulated points
+
+---
+
+### 4. System Architecture  
+- The overall backend design is illustrated below:  
+  <img src="assets/systemarchitecturebackend.png" width="1000" alt="System Architecture"/>
+
+---
+
+### 5. Deployment  
+- The backend is deployed via [**Railway**](https://railway.app), enabling seamless deployment and hosting.
+
+<img src="my_flask_app/assets/railway.png" alt="Railway Logo" width="130" />
+
+---
+
+## 📂 Project Structure
 

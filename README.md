@@ -21,11 +21,12 @@ This project uses a trained deep learning model to analyze user poses via keypoi
 
 3. **Score Calculation**  
    - If the pose is predicted to be **correct**, the system calculates a **yoga score**.
+   
    - Points are accumulated and stored for the user profile.
 
 4. **System Architecture**  
    - You can find the overall backend system design here:  
-     `Rega-Project/assets/systemarchitecturebackend.png`
+     `assets/systemarchitecturebackend.png`
 
 5. **Deployment**  
    - The backend is deployed using [**Railway**](https://railway.app).

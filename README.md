@@ -26,7 +26,7 @@ This project uses a trained deep learning model to analyze user poses via keypoi
 
 4. **System Architecture**  
    - You can find the overall backend system design here:  
-      <img src="`assets/systemarchitecturebackend.png`" width="250"/>
+      <img src="assets/systemarchitecturebackend.png" width="250"/>
 
 5. **Deployment**  
    - The backend is deployed using [**Railway**](https://railway.app).

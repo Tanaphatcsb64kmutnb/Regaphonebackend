@@ -1,52 +1,44 @@
-# 🧘‍♀️ Yoga Pose Evaluation System
+🧘‍♀️ Yoga Pose Evaluation System
+A real-time yoga pose evaluation and scoring system powered by Flask and deep learning.
 
-A Flask-based backend system for real-time yoga pose evaluation and scoring.
+🚀 Project Overview
+This system uses a trained deep learning model to analyze yoga poses based on body keypoints and joint positions.
+✅ When the user performs a correct pose, the system awards points — motivating consistent practice and improvement!
 
----
+🧠 How It Works
+1️⃣ Backend Technology
+🧩 Built with Python Flask — lightweight, fast, and ideal for machine learning inference.
+📁 Model location:
+uploads/yoga_pose_model_best_folddd28268.h5
 
-## 🚀 Project Overview
+<img src="assets/flask.png" alt="Flask Logo" width="100"/>
+2️⃣ Yoga Pose Prediction
+📌 The system receives keypoints and joint position data from the user's pose.
+🧠 The model evaluates if the pose matches the correct yoga form.
 
-This project utilizes a trained deep learning model to analyze user yoga poses based on body keypoints and joint positions.  
-If the pose is performed correctly, the system awards points to the user, which are accumulated over time.
+Joint Detection Example	Body Keypoints Example
+<img src="assets/joint.png" width="300"/>	<img src="assets/body.png" width="300"/>
 
----
+3️⃣ Score Calculation
+💯 If the user performs the pose correctly:
 
-## 🧠 How It Works
+A Yoga Score is calculated.
 
-### 1. Backend Technology  
-- Developed using the **Python Flask** framework.  
-- The pose evaluation model is located at:  
-  `uploads/yoga_pose_model_best_folddd28268.h5`  
+Points are added to the user's total score — promoting engagement over time.
 
-<img src="assets/flask.png" alt="Flask Logo" width="100" />
+4️⃣ System Architecture
+🧱 The backend system is modular and scalable, with each part clearly separated for easy maintenance and upgrades.
 
----
+<img src="assets/systemarchitecturebackend.png" width="1000" alt="System Architecture"/>
+5️⃣ Deployment
+🚀 Hosted on Railway for easy deployment and cloud hosting.
 
-### 2. Yoga Pose Prediction  
-- The system receives keypoints and joint position data as input.  
-- The model predicts whether the user is performing the yoga pose correctly.
+<img src="assets/railway.png" alt="Railway Logo" width="130"/>
+✨ Features Recap
+🧘‍♂️ Real-time yoga pose evaluation
 
----
+🔍 Pose accuracy analysis using joint keypoints
 
-### 3. Score Calculation  
-- When a pose is correctly performed, the system:
-  - Calculates a **yoga score**
-  - Adds it to the user's total accumulated points
+🏅 Scoring system to motivate users
 
----
-
-### 4. System Architecture  
-- The overall backend design is illustrated below:  
-  <img src="assets/systemarchitecturebackend.png" width="1000" alt="System Architecture"/>
-
----
-
-### 5. Deployment  
-- The backend is deployed via [**Railway**](https://railway.app), enabling seamless deployment and hosting.
-
-<img src="assets/railway.png" alt="Railway Logo" width="130" />
-
----
-
-## 📂 Project Structure
-
+🌐 Deployed and accessible via Railway
